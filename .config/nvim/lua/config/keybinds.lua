@@ -173,10 +173,12 @@ function M.common()
         { desc = "Buffers - Explorer", noremap = true, silent = true })
     map("n", "<leader>bu", function() Snacks.picker.undo() end,
         { desc = "Buffers - Undo List", noremap = true, silent = true })
-    map("n", "<leader>bq", function() Snacks.bufdelete() end,
+    map("n", "<leader>bc", function() Snacks.bufdelete() end,
+        { desc = "Buffers - Close (Keep Layout)", noremap = true, silent = true })
+    map("n", "<leader>bq", "<CMD>bd<CR>",
         { desc = "Buffers - Close Current", noremap = true, silent = true })
 
-    -- Navigation/Selection
+    -- Text Navigation/Selection
     map({ "n", "x", "o" }, "s", function() require("flash").jump() end,
         { desc = "Flash - Jump", noremap = true, silent = true })
     map({ "n", "x", "o" }, "S", function() require("flash").treesitter() end,

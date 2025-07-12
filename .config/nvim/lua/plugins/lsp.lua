@@ -74,6 +74,7 @@ return {
             }
         },
         config = function(_, opts)
+            local icons = require("config.icons")
             local utils = require("utils")
             local lsp_lines = require("lsp_lines")
             local actions_preview = require("actions-preview")
@@ -116,6 +117,11 @@ return {
                 else
                     vim.lsp.enable(server)
                 end
+            end
+
+            for type, icon in pairs(icons.diagnostics) do
+                local hl = "DiagnosticSign" .. type
+                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
             end
 
             vim.diagnostic.config({

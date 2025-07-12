@@ -1,4 +1,4 @@
-local options = vim.o
+local options = vim.opt
 local command = vim.cmd
 
 local keybinds = require "config.keybinds"
@@ -20,7 +20,14 @@ options.signcolumn = "yes"
 options.number = true
 options.relativenumber = true
 
-options.listchars = "eol:↴,tab:>·,trail:~,extends:>,precedes:<,space:·"
+options.listchars = {
+    eol = "↴",
+    tab = ">·",
+    trail = "~",
+    extends = ">",
+    precedes = "<",
+    space = "·",
+}
 options.list = true
 
 options.background = "dark"
