@@ -2,14 +2,14 @@ local M = {}
 
 M.git = {
     Added     = " ",
+    Commit    = "󰜘 ",
+    Ignored   = "󰈉 ",
     Modified  = " ",
     Removed   = " ",
-    Untracked = " ",
-    Commit    = "󰜘 ",
-    Staged    = "● ",
-    Ignored   = "󰈉 ",
     Renamed   = "󰁕 ",
+    Staged    = "● ",
     Unmerged  = " ",
+    Untracked = " ",
 }
 
 M.files = {
@@ -20,18 +20,18 @@ M.files = {
 
 M.diagnostics = {
     Error = " ",
-    Warn  = " ",
     Hint  = " ",
     Info  = " ",
+    Warn  = " ",
 }
 
 M.ui = {
+    Collapsed  = " ",
+    Disabled   = " ",
+    Enabled    = " ",
+    Expanded   = " ",
     Selected   = "󰄵 ",
     Unselected = "󰄱 ",
-    Collapsed  = " ",
-    Expanded   = " ",
-    Enabled    = " ",
-    Disabled   = " ",
 }
 
 M.code = {

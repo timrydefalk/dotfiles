@@ -188,6 +188,16 @@ function M.common()
     map({ "x", "o" }, "R", function() require("flash").treesitter_search() end,
         { desc = "Flash - Treesitter Search", noremap = true, silent = true })
 
+    -- Text Interactions
+    map('v', '<leader>ss', ":'<,'>!sort<CR>",
+        { desc = "Sort - Alphabetically", noremap = true, silent = true })
+    map('v', '<leader>Ss', ":'<,'>!sort -r<CR>",
+        { desc = "Sort - Alphabetically (Reverse)", noremap = true, silent = true })
+    map('v', '<leader>sn', ":'<,'>!sort -n<CR>",
+        { desc = "Sort - Numerically", noremap = true, silent = true })
+    map('v', '<leader>Sn', ":'<,'>!sort -nr<CR>",
+        { desc = "Sort - Numerically (Reverse)", noremap = true, silent = true })
+
     -- command line
     map("n", "<leader>qc", function() Snacks.picker.commands() end,
         { desc = "Command Line - Search", noremap = true, silent = true })
