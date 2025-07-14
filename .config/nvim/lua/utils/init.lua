@@ -31,4 +31,20 @@ function M.get_keys_from_table(value)
     return keys
 end
 
+function M.merge_arrays(...)
+    local merged = {}
+
+    for _, array in ipairs({ ... }) do
+        if type(array) == "table" then
+            for _, item in ipairs(array) do
+                if not vim.tbl_contains(merged, item) then
+                    table.insert(merged, item)
+                end
+            end
+        end
+    end
+
+    return merged
+end
+
 return M

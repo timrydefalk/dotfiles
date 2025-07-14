@@ -4,21 +4,31 @@ return {
         dependencies = {
             "mason-org/mason.nvim",
             "mason-org/mason-lspconfig.nvim",
+            "jay-babu/mason-null-ls.nvim",
             "WhoIsSethDaniel/mason-tool-installer.nvim",
             "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
             "aznhe21/actions-preview.nvim",
             "saghen/blink.cmp",
-            "seblyng/roslyn.nvim"
+            "seblyng/roslyn.nvim",
+            "nvimtools/none-ls.nvim",
         },
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            linters = {},
-            formatters = { "black" },
+            -- For formatters or linters respectively
+            -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
+            --
+            -- linters -> represent diagnostics in null-ls
+            -- formatters -> represent formatting in null-ls
+            --
+            -- currently not added: hover, completion and code_actions from null-ls
+            linters = { "hadolint", "actionlint" },
+            formatters = { "black", "yamlfmt" },
             servers = {
                 lua_ls = {}, -- configuration provided via lazydev.nvim
+                bashls = {},
                 pyright = {},
                 roslyn = {
-                    on_attach = function(client, bufnr)
+                    on_attach = function(_, _) -- client, bufnr
                         vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave" }, {
                             pattern = "*",
                             callback = function()
@@ -80,14 +90,14 @@ return {
             local actions_preview = require("actions-preview")
             local mason_lsp = require("mason-lspconfig")
             local mason_tool_installer = require("mason-tool-installer")
+            local null_ls = require("null-ls")
 
             mason_tool_installer.setup({
-                ensure_installed = vim.tbl_extend(
-                    "force",
+                ensure_installed = utils.merge_arrays(
                     utils.get_keys_from_table(opts.servers),
                     opts.linters,
                     opts.formatters
-                ),
+                )
             })
 
             mason_lsp.setup({
@@ -119,13 +129,41 @@ return {
                 end
             end
 
-            for type, icon in pairs(icons.diagnostics) do
-                local hl = "DiagnosticSign" .. type
-                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+            local sources = {}
+
+            for _, formatters in pairs(opts.formatters) do
+                local formatter = null_ls.builtins.formatting[formatters]
+                if formatter then
+                    table.insert(sources, formatter)
+                end
             end
 
+            for _, linter in pairs(opts.linters) do
+                local diagnostic = null_ls.builtins.diagnostics[linter]
+                if diagnostic then
+                    table.insert(sources, diagnostic)
+                end
+            end
+
+            null_ls.setup({
+                sources = sources
+            })
+
             vim.diagnostic.config({
-                signs = true,
+                signs = {
+                    text = {
+                        [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+                        [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
+                        [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
+                        [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
+                    },
+                    linehl = {
+                        [vim.diagnostic.severity.ERROR] = "Error",
+                        [vim.diagnostic.severity.WARN] = "Warn",
+                        [vim.diagnostic.severity.INFO] = "Info",
+                        [vim.diagnostic.severity.HINT] = "Hint",
+                    },
+                },
                 update_in_insert = false,
                 underline = true,
                 severity_sort = true,
@@ -134,5 +172,4 @@ return {
             })
         end
     },
-
 }

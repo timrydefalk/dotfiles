@@ -4,7 +4,7 @@ return {
         event = "VeryLazy",
         ---@type Flash.Config
         opts = {
-            modes = { char = { jump_labels = function(_) return vim.v.count == 0 end } },
+            modes = { char = { jump_labels = true } },
         },
     }
 }

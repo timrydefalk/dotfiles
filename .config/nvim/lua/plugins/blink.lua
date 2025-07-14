@@ -2,10 +2,14 @@ return {
     {
         "saghen/blink.cmp",
         -- optional: provides snippets for the snippet source
-        dependencies = { "fang2hou/blink-copilot" },
-
-        -- requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-        build = "cargo build --release",
+        dependencies = {
+            "fang2hou/blink-copilot",
+            "rafamadriz/friendly-snippets",
+            "MahanRahmati/blink-nerdfont.nvim",
+            "archie-judd/blink-cmp-words",
+            "moyiz/blink-emoji.nvim",
+        },
+        version = '1.*',
 
         ---@module "blink.cmp"
         ---@type blink.cmp.Config
@@ -23,7 +27,7 @@ return {
             --
             --
             -- See :h blink-cmp-config-keymap for defining your own keymap
-            keymap = { preset = "default" },
+            keymap = { preset = "default", },
 
             appearance = {
                 -- "mono" (default) for "Nerd Font Mono" or "normal" for "Nerd Font"
@@ -34,6 +38,11 @@ return {
             signature = {
                 enabled = true,
                 window = { border = "rounded", show_documentation = false }
+            },
+
+            cmdline = {
+                enabled = true,
+                completion = { menu = { auto_show = true } },
             },
 
             completion = {
@@ -55,18 +64,61 @@ return {
             },
 
             sources = {
-                default = { "copilot", "lazydev", "lsp", "path", "snippets", "buffer" },
+                default = { "copilot", "lsp", "path", "snippets", "buffer", "cmdline" },
+                per_filetype = {
+                    lua = { inherit_defaults = true, 'lazydev', "nerdfont", "emoji" },
+                    text = { "dictionary", "thesaurus", "emoji" },
+                    markdown = { "dictionary", "thesaurus", "emoji" },
+                    gitcommit = { "dictionary", "thesaurus", "emoji" },
+                },
                 providers = {
                     lazydev = {
                         name = "LazyDev",
                         module = "lazydev.integrations.blink",
-                        score_offset = 100,
+                        score_offset = 150,
                     },
+
                     copilot = {
                         name = "copilot",
                         module = "blink-copilot",
                         score_offset = 100,
                         async = true,
+                    },
+
+                    nerdfont = {
+                        module = "blink-nerdfont",
+                        name = "Nerd Fonts",
+                        score_offset = 10,
+                        opts = { insert = true },
+                    },
+
+                    emoji = {
+                        module = "blink-emoji",
+                        name = "Emoji",
+                        score_offset = 10,
+                        opts = {
+                            insert = true,
+                        },
+                    },
+
+                    thesaurus = {
+                        name = "blink-cmp-words",
+                        module = "blink-cmp-words.thesaurus",
+                        opts = {
+                            score_offset = 15,
+                            -- Default is as below ("antonyms", "similar to" and "also see").
+                            pointer_symbols = { "!", "&", "^" },
+                        },
+                    },
+
+                    dictionary = {
+                        name = "blink-cmp-words",
+                        module = "blink-cmp-words.dictionary",
+                        opts = {
+                            dictionary_search_threshold = 3,
+                            score_offset = 15,
+                            pointer_symbols = { "!", "&", "^" },
+                        },
                     },
                 },
             },

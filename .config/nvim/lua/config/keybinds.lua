@@ -170,7 +170,7 @@ function M.common()
     map("n", "<leader>be", function() Snacks.picker.buffers() end,
         { desc = "Buffers - Explorer", noremap = true, silent = true })
     map("n", "<leader>bg", function() Snacks.picker.grep_buffers() end,
-        { desc = "Buffers - Explorer", noremap = true, silent = true })
+        { desc = "Buffers - Search", noremap = true, silent = true })
     map("n", "<leader>bu", function() Snacks.picker.undo() end,
         { desc = "Buffers - Undo List", noremap = true, silent = true })
     map("n", "<leader>bc", function() Snacks.bufdelete() end,
@@ -198,7 +198,7 @@ function M.common()
     map('v', '<leader>Sn', ":'<,'>!sort -nr<CR>",
         { desc = "Sort - Numerically (Reverse)", noremap = true, silent = true })
 
-    -- command line
+    -- Command line
     map("n", "<leader>qc", function() Snacks.picker.commands() end,
         { desc = "Command Line - Search", noremap = true, silent = true })
     map("n", "<leader>qh", function() Snacks.picker.command_history() end,
@@ -214,10 +214,8 @@ function M.common()
         { desc = "Terminal - Toggle", noremap = true, silent = true })
     --map("t", "<ESC>", "<C-\\><C-n>", { noremap = true, silent = true })
     map("t", "<ESC>", "<ESC><ESC>", { noremap = true, silent = true })
-end
 
-function M.git()
-    -- git
+    -- Git
     map("n", "<leader>gb", function() Snacks.git.blame_line() end,
         { desc = "Git - Blame Line", noremap = true, silent = true })
 end
