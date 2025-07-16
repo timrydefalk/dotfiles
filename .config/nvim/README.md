@@ -8,3 +8,6 @@
 - ripgrep
 - dotnet-sdk
 - tree-sitter-cli
+- github-cli
+- fd
+- find

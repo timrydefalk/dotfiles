@@ -1,4 +1,5 @@
 local icons = require("config.icons")
+local keybinds = require("config.keybinds")
 
 return {
     {
@@ -39,22 +40,7 @@ return {
                         dir_open = icons.files.DirectoryOpen,
                         file = icons.files.File,
                     },
-                    -- keymaps = {
-                    --     nowait = "󰓅 "
-                    -- },
-                    -- tree = {
-                    --     vertical = "│ ",
-                    --     middle   = "├╴",
-                    --     last     = "└╴",
-                    -- },
-                    -- undo = {
-                    --     saved = " ",
-                    -- },
                     ui = {
-                        -- live       = "󰐰 ",
-                        -- hidden     = "h",
-                        -- ignored    = "i",
-                        -- follow     = "f",
                         selected   = icons.ui.Selected,
                         unselected = icons.ui.Unselected,
                     },
@@ -77,13 +63,22 @@ return {
                         Info  = icons.diagnostics.Info,
                     },
                     lsp = {
-                        -- unavailable = "",
                         enabled = icons.ui.Enabled,
                         disabled = icons.ui.Disabled,
-                        -- attached = "󰖩 "
                     },
-                    --kinds = icons.kinds,
+                    kinds = icons.kinds,
                 },
+                win = {
+                    input = {
+                        keys = keybinds.snacks_picker_input()
+                    },
+                    list = {
+                        keys = keybinds.snacks_picker_list()
+                    },
+                    preview = {
+                        keys = keybinds.snacks_picker_preview()
+                    },
+                }
             },
             notifier     = { enabled = true },
             quickfile    = { enabled = true },
