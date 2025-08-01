@@ -70,3 +70,33 @@ autocmd(
         group = augroup("auto_hlsearch", { clear = true }),
     }
 )
+
+autocmd(
+    "BufEnter",
+    {
+        callback = function()
+            if vim.bo.buftype ~= "" then
+                return
+            end
+
+            local nvim_config_path = vim.env.HOME .. "/.config/nvim"
+            local new_cwd_path = vim.fn.fnamemodify(
+                vim.fn.finddir(".git", ".;"),
+                ":h"
+            ) or vim.env.HOME
+
+            if new_cwd_path == vim.fn.getcwd() then
+                return
+            end
+
+            if vim.fn.expand("%:p:h"):find("^" .. nvim_config_path) ~= nil then
+                new_cwd_path = nvim_config_path
+            end
+
+            if new_cwd_path ~= "." then
+                print("Changing cwd: ", new_cwd_path)
+                vim.api.nvim_set_current_dir(new_cwd_path)
+            end
+        end
+    }
+)

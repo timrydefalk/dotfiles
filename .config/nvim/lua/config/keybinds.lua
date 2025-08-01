@@ -7,6 +7,10 @@ local action_allowed_for_filetype = function()
         or vim.bo.filetype == "sagafinder"
         or vim.bo.filetype == "sagarename"
         or vim.bo.filetype == "mason"
+        or vim.bo.filetype == "prompt"
+        or vim.bo.filetype == "neotest-summary"
+        or vim.bo.filetype == "snacks-input"
+        or vim.bo.filetype == "easy-dotnet"
 end
 -- v - visual/select
 -- x - visual
@@ -210,10 +214,10 @@ function M.common()
         { desc = "Zen - Toggle", noremap = true, silent = true })
 
     -- Terminal
-    map("n", "<leader>tt", function() Snacks.terminal() end,
+    map("n", "<leader>tt", function() Snacks.terminal.toggle() end,
         { desc = "Terminal - Toggle", noremap = true, silent = true })
     --map("t", "<ESC>", "<C-\\><C-n>", { noremap = true, silent = true })
-    map("t", "<ESC>", "<ESC><ESC>", { noremap = true, silent = true })
+    --map("t", "<ESC>", "<ESC><ESC>", { noremap = true, silent = true })
 
     -- Git
     map("n", "<leader>gb", function() Snacks.git.blame_line() end,
@@ -228,7 +232,7 @@ function M.lsp()
     -- Snacks
     map("n", "<leader>cg", function() Snacks.picker.lsp_definitions() end,
         { desc = "LSP - Go To Definition", noremap = true, silent = true })
-    map("n", "<leader>ci", function() Snacks.picker.lsp_implementations() end,
+    map("n", "<leader>cG", function() Snacks.picker.lsp_implementations() end,
         { desc = "LSP - Go To Implementation", noremap = true, silent = true })
     map("n", "<leader>ct", function() Snacks.picker.lsp_type_definitions() end,
         { desc = "LSP - Type Definition", noremap = true, silent = true })
@@ -250,6 +254,31 @@ function M.lsp()
         { desc = "LSP - Documentation", noremap = true, silent = true })
     map("n", "<leader>co", "<CMD>Lspsaga outline<CR>",
         { desc = "LSP - Outline", noremap = true, silent = true })
+    map("n", "<leader>cd", "<CMD>Lspsaga show_line_diagnostics<CR>",
+        { desc = "LSP - Show Line Diagnostics", noremap = true, silent = true })
+    map("n", "<leader>cD", function() require("lsp_lines").toggle() end,
+        { desc = "LSP - Toggle Diagnostics", noremap = true, silent = true })
+
+    -- Neogen
+    map("n", "<leader>cn", function() require("neogen").generate() end,
+        { desc = "LSP - Generate Documentation", noremap = true, silent = true })
+    map("n", "<leader>cN", function() require("neogen").generate({ type = "func" }) end,
+        { desc = "LSP - Generate Documentation (Function)", noremap = true, silent = true })
+    map("n", "<leader>cC", function() require("neogen").generate({ type = "class" }) end,
+        { desc = "LSP - Generate Documentation (Class)", noremap = true, silent = true })
+
+    -- Repl
+    map("n", "<leader>cR",
+        function()
+            if vim.bo.filetype == "cs" then
+                Snacks.terminal.toggle("csharprepl")
+            elseif vim.bo.filetype == "py" then
+                Snacks.terminal.toggle("python3")
+            elseif vim.bo.filetype == "lua" then
+                Snacks.terminal.toggle("croissant")
+            end
+        end,
+        { desc = "Terminal - REPL", noremap = true, silent = true })
 end
 
 function M.blink_autocomplete()

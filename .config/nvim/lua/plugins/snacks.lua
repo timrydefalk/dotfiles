@@ -6,7 +6,9 @@ return {
         "folke/snacks.nvim",
         priority = 1000,
         lazy = false,
-        dependencies = { "nvim-tree/nvim-web-devicons" },
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
         opts = {
             -- your configuration comes here
             -- or leave it empty to use the default settings
@@ -24,7 +26,28 @@ return {
                         layout = {
                             preset = "default",
                             preview = true
-                        }
+                        },
+                        win = {
+                            list = {
+                                keys = {
+                                    ["A"] = "explorer_add_dotnet",
+                                },
+                            },
+                        },
+                        actions = {
+                            explorer_add_dotnet = function(picker)
+                                local dir = picker:dir()
+                                local tree = require("snacks.explorer.tree")
+                                local actions = require("snacks.explorer.actions")
+                                local easydotnet = require("easy-dotnet")
+
+                                easydotnet.create_new_item(dir, function(item_path)
+                                    tree:open(dir)
+                                    tree:refresh(dir)
+                                    actions.update(picker, { target = item_path })
+                                end)
+                            end,
+                        },
                     },
                     command_history = {
                         layout = {
@@ -90,9 +113,45 @@ return {
                     position  = "float",
                     border    = "rounded",
                     title     = "Terminal",
-                    title_pos = "center"
+                    title_pos = "center",
+                    bo        = {
+                        filetype = "snacks_terminal",
+                    },
+                    wo        = {},
+                    keys      = {
+                        q = "hide",
+                        gf = function(self)
+                            local f = vim.fn.findfile(vim.fn.expand("<cfile>"), "**")
+                            if f == "" then
+                                Snacks.notify.warn("No file under cursor")
+                            else
+                                self:hide()
+                                vim.schedule(function()
+                                    vim.cmd("e " .. f)
+                                end)
+                            end
+                        end,
+                        term_normal = {
+                            "<esc>",
+                            function(self)
+                                vim.cmd("stopinsert")
+                                -- self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
+                                -- if self.esc_timer:is_active() then
+                                --     self.esc_timer:stop()
+                                --     vim.cmd("stopinsert")
+                                -- else
+                                --     self.esc_timer:start(200, 0, function() end)
+                                --     return "<esc>"
+                                -- end
+                            end,
+                            mode = "t",
+                            expr = true,
+                            desc = "Double escape to normal mode",
+                        },
+                    },
                 },
-                shell = "bash"
+                shell = "bash",
+
             },
             words        = { enabled = true },
         },

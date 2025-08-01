@@ -1,0 +1,16 @@
+{
+    "workspace.library": [
+        "/home/tim/.config/nvim",
+        "/home/tim/.local/share/nvim/lazy/lazy.nvim",
+        "/home/tim/.local/share/nvim/lazy/mason-lspconfig.nvim",
+        "/home/tim/.local/share/nvim/lazy/mason.nvim",
+        "/home/tim/.local/share/nvim/lazy/csharpls-extended-lsp.nvim",
+        "/home/tim/.local/share/nvim/lazy/nvim-lspconfig",
+        "/home/tim/.local/share/nvim/lazy/mason-null-ls.nvim",
+        "/home/tim/.local/share/nvim/lazy/tokyonight.nvim",
+        "/usr/share/nvim/runtime",
+        "/usr/lib/nvim",
+        "/home/tim/.local/state/nvim/lazy/readme",
+        "${3rd}/luassert/library"
+    ]
+}

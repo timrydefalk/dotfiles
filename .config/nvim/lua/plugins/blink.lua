@@ -4,10 +4,20 @@ return {
         -- optional: provides snippets for the snippet source
         dependencies = {
             "fang2hou/blink-copilot",
-            "rafamadriz/friendly-snippets",
             "MahanRahmati/blink-nerdfont.nvim",
             "archie-judd/blink-cmp-words",
             "moyiz/blink-emoji.nvim",
+            {
+                'L3MON4D3/LuaSnip',
+                version = 'v2.*',
+            },
+            {
+                "rafamadriz/friendly-snippets",
+                after = "LuaSnip",
+                config = function()
+                    require("luasnip.loaders.from_vscode").lazy_load()
+                end
+            }
         },
         version = '1.*',
 
@@ -20,6 +30,10 @@ return {
                 -- "mono" (default) for "Nerd Font Mono" or "normal" for "Nerd Font"
                 -- Adjusts spacing to ensure icons are aligned
                 nerd_font_variant = "mono"
+            },
+
+            snippets = {
+                preset = "luasnip"
             },
 
             signature = {
@@ -57,12 +71,21 @@ return {
                     text = { "dictionary", "thesaurus", "emoji" },
                     markdown = { "dictionary", "thesaurus", "emoji" },
                     gitcommit = { "dictionary", "thesaurus", "emoji" },
+                    xml = { inherit_defaults = true, "easy-dotnet" },
                 },
                 providers = {
                     lazydev = {
                         name = "LazyDev",
                         module = "lazydev.integrations.blink",
                         score_offset = 150,
+                    },
+
+                    ["easy-dotnet"] = {
+                        name = "easy-dotnet",
+                        enabled = true,
+                        module = "easy-dotnet.completion.blink",
+                        score_offset = 100,
+                        async = true,
                     },
 
                     copilot = {

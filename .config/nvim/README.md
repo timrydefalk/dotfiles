@@ -11,3 +11,7 @@
 - github-cli
 - fd
 - find
+- luarocks
+- lua5.1
+- csharprepl (dotnet tool install -g csharprepl)
+- croissant (luarocks install croissant)
