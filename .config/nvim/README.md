@@ -15,3 +15,5 @@
 - lua5.1
 - csharprepl (dotnet tool install -g csharprepl)
 - croissant (luarocks install croissant)
+- dotnet-outdated-tool (dotnet tool install --global dotnet-outdated-tool)
+- dotnet ef (dotnet tool install --global dotnet-ef)

@@ -1,4 +1,133 @@
+local function rebuild_project(co, path)
+    local spinner = require("easy-dotnet.ui-modules.spinner").new()
+    spinner:start_spinner "Building"
+    vim.fn.jobstart(string.format("dotnet build %s", path), {
+        on_exit = function(_, return_code)
+            if return_code == 0 then
+                spinner:stop_spinner "Built successfully"
+            else
+                spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
+                error "Build failed"
+            end
+            coroutine.resume(co)
+        end,
+    })
+    coroutine.yield()
+end
+
 return {
+    -- DAP
+    {
+        "https://codeberg.org/mfussenegger/nvim-dap",
+        dependencies = {
+            "mason-org/mason.nvim",
+            "jay-babu/mason-nvim-dap.nvim",
+            "nvim-neotest/nvim-nio",
+            "rcarriga/nvim-dap-ui",
+            "theHamsta/nvim-dap-virtual-text"
+        },
+        event = "LspAttach",
+        config = function()
+            local icons = require("config.icons")
+            local dap = require("dap")
+            local dapui = require("dapui")
+
+            dapui.setup()
+
+            dap.listeners.before.attach.dapui_config = function()
+                dapui.open()
+            end
+            dap.listeners.before.launch.dapui_config = function()
+                dapui.open()
+            end
+            dap.listeners.before.event_terminated.dapui_config = function()
+                dapui.close()
+            end
+            dap.listeners.before.event_exited.dapui_config = function()
+                dapui.close()
+            end
+
+            require('mason-nvim-dap').setup({
+                ensure_installed = {},
+                handlers = {}, -- sets up dap in the predefined manner
+                automatic_installation = false
+            })
+
+            -- .NET specific setup using `easy-dotnet`
+            require("easy-dotnet.netcoredbg").register_dap_variables_viewer() -- special variables viewer specific for .NET
+
+            local dotnet = require("easy-dotnet")
+            local debug_dll = nil
+
+            local function ensure_dll()
+                if debug_dll ~= nil then
+                    return debug_dll
+                end
+                local dll = dotnet.get_debug_dll(true)
+                debug_dll = dll
+                return dll
+            end
+
+            for _, value in ipairs({ "cs", "fsharp" }) do
+                dap.configurations[value] = {
+                    {
+                        type = "coreclr",
+                        name = "Program",
+                        request = "launch",
+                        env = function()
+                            local dll = ensure_dll()
+                            local vars = dotnet.get_environment_variables(dll.project_name, dll.relative_project_path)
+                            return vars or nil
+                        end,
+                        program = function()
+                            local dll = ensure_dll()
+                            local co = coroutine.running()
+                            rebuild_project(co, dll.project_path)
+                            return dll.relative_dll_path
+                        end,
+                        cwd = function()
+                            local dll = ensure_dll()
+                            return dll.relative_project_path
+                        end
+                    },
+                    {
+                        type = "coreclr",
+                        name = "Test",
+                        request = "attach",
+                        processId = function()
+                            local res = require("easy-dotnet").experimental.start_debugging_test_project()
+                            return res.process_id
+                        end
+                    }
+                }
+            end
+
+            -- Reset debug_dll after each terminated session
+            dap.listeners.before['event_terminated']['easy-dotnet'] = function()
+                debug_dll = nil
+            end
+
+            dap.adapters.coreclr = {
+                type = "executable",
+                command = "netcoredbg",
+                args = { "--interpreter=vscode" },
+            }
+
+
+            require("nvim-dap-virtual-text").setup({})
+
+
+            vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+
+            for name, sign in pairs(icons.debugger) do
+                sign = type(sign) == "table" and sign or { sign }
+                vim.fn.sign_define(
+                    "Dap" .. name,
+                    { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+                )
+            end
+        end
+    },
     {
         "neovim/nvim-lspconfig",
         dependencies = {

@@ -242,7 +242,7 @@ function M.lsp()
         { desc = "LSP - Symbols", noremap = true, silent = true })
 
     -- Actions-preview
-    map("n", "<leader>ca", function() require("actions-preview").code_actions() end,
+    map({ "n", "x" }, "<leader>ca", function() require("actions-preview").code_actions() end,
         { desc = "LSP - Code Actions", noremap = true, silent = true })
 
     -- Lspsaga
@@ -279,6 +279,22 @@ function M.lsp()
             end
         end,
         { desc = "Terminal - REPL", noremap = true, silent = true })
+
+    -- nvim-dap
+    map("n", "<leader>db", function() require("dap").toggle_breakpoint() end,
+        { desc = "Debug - Toggle Breakpoint", noremap = true, silent = true })
+    map("n", "<leader>dc", function() require("dap").continue() end,
+        { desc = "Debug - Continue", noremap = true, silent = true })
+    map("n", "<leader>di", function() require("dap").step_into() end,
+        { desc = "Debug - Step Into", noremap = true, silent = true })
+    map("n", "<leader>do", function() require("dap").step_over() end,
+        { desc = "Debug - Step Over", noremap = true, silent = true })
+    map("n", "<leader>du", function() require("dap").step_out() end,
+        { desc = "Debug - Step Out", noremap = true, silent = true })
+    map("n", "<leader>dr", function() require("dap").repl.open() end,
+        { desc = "Debug - Open REPL", noremap = true, silent = true })
+    map("n", "<leader>dt", function() require("dap").terminate() end,
+        { desc = "Debug - Terminate", noremap = true, silent = true })
 end
 
 function M.blink_autocomplete()

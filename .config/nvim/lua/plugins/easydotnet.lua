@@ -87,7 +87,7 @@ return {
                 fsproj_mappings = true,
                 auto_bootstrap_namespace = {
                     --block_scoped, file_scoped
-                    type = "block_scoped",
+                    type = "file_scoped",
                     enabled = true
                 },
                 -- choose which picker to use with the plugin

@@ -14,6 +14,12 @@ return {
         "black",
         "yamlfmt",
     },
+    -- Debugging through DAP
+    debuggers = {
+        "netcoredbg",
+        "debugpy",
+        "local-lua-debugger-vscode",
+    },
     -- any tools you can install through Mason that are needed for others. E.g. bashls needs shellcheck.
     dependencies = {
         "shellcheck", -- for bashls

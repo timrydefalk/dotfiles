@@ -29,6 +29,7 @@ return {
                     utils.get_keys_from_table(opts.servers),
                     opts.linters,
                     opts.formatters,
+                    opts.debuggers,
                     opts.dependencies
                 )
             })

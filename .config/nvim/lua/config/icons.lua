@@ -34,6 +34,14 @@ M.ui = {
     Unselected = "󰄱 ",
 }
 
+M.debugger = {
+    Stopped = { "", "DiagnosticWarn", "DapStoppedLine" },
+    Breakpoint = " ",
+    BreakpointCondition = " ",
+    BreakpointRejected = { " ", "DiagnosticError" },
+    LogPoint = ".>",
+}
+
 M.code = {
     CodeAction = "󰌵",
 }
