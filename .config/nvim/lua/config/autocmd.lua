@@ -10,22 +10,22 @@ autocmd("LspAttach", {
 
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 
-        autocmd("BufWritePre", {
-            group = lsp_formatting,
-            callback = function(args)
-                if client:supports_method('textDocument/formatting') then
-                    for bufnr, _ in pairs(client.attached_buffers) do
-                        if bufnr == args.buf then
-                            vim.lsp.buf.format({
-                                bufnr = bufnr,
-                                async = false,
-                            })
-                            return
-                        end
-                    end
-                end
-            end,
-        })
+        -- autocmd("BufWritePre", {
+        --     group = lsp_formatting,
+        --     callback = function(args)
+        --         if client:supports_method('textDocument/formatting') and vim.bo.filetype ~= "dockerfile" then
+        --             for bufnr, _ in pairs(client.attached_buffers) do
+        --                 if bufnr == args.buf then
+        --                     vim.lsp.buf.format({
+        --                         bufnr = bufnr,
+        --                         async = false,
+        --                     })
+        --                     return
+        --                 end
+        --             end
+        --         end
+        --     end,
+        -- })
     end,
 })
 

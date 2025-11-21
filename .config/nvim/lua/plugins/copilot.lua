@@ -30,35 +30,59 @@ return {
         end,
     },
     -- {
-    --     "github/copilot.vim",
-    --     cmd = "Copilot",
-    --     event = "BufWinEnter",
-    --     init = function()
-    --         vim.g.copilot_no_maps = true
-    --     end,
-    --     config = function()
-    --         -- Block the normal Copilot suggestions
-    --         vim.api.nvim_create_augroup("github_copilot", { clear = true })
-    --         vim.api.nvim_create_autocmd({ "FileType", "BufUnload" }, {
-    --             group = "github_copilot",
-    --             callback = function(args)
-    --                 vim.fn["copilot#On" .. args.event]()
-    --             end,
-    --         })
-    --         vim.fn["copilot#OnFileType"]()
-    --     end,
+    --     "CopilotC-Nvim/CopilotChat.nvim",
+    --     event = "VeryLazy",
+    --     dependencies = {
+    --         { "zbirenbaum/copilot.lua" },
+    --         -- { "nvim-lua/plenary.nvim" },
+    --     },
+    --     build = "make tiktoken", -- Only on MacOS or Linux
+    --     opts = {
+    --         -- See Configuration section for options
+    --     },
     -- },
     {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        event = "VeryLazy",
+        "olimorris/codecompanion.nvim",
         dependencies = {
-            -- { "github/copilot.vim" },
-            { "zbirenbaum/copilot.lua" },
-            -- { "nvim-lua/plenary.nvim" },
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "ravitemer/mcphub.nvim",
         },
-        build = "make tiktoken", -- Only on MacOS or Linux
         opts = {
-            -- See Configuration section for options
+            opts = {
+                log_level = "DEBUG", -- or "TRACE"
+            },
+            strategies = {
+                chat = {
+                    adapter = "copilot",
+                },
+                inline = {
+                    adapter = "copilot",
+                },
+                cmd = {
+                    adapter = "copilot",
+                },
+            },
+            extensions = {
+                mcphub = {
+                    callback = "mcphub.extensions.codecompanion",
+                    opts = {
+                        make_vars = true,
+                        make_slash_commands = true,
+                        show_result_in_chat = true
+                    }
+                }
+            }
         },
     },
+    {
+        "ravitemer/mcphub.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        build = "npm install -g mcp-hub@latest",
+        config = function()
+            require("mcphub").setup()
+        end
+    }
 }

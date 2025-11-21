@@ -1,10 +1,11 @@
 return {
     {
         "GustavEikaas/easy-dotnet.nvim",
-        -- 'nvim-telescope/telescope.nvim' or 'ibhagwan/fzf-lua' or 'folke/snacks.nvim'
-        -- are highly recommended for a better experience
-        dependencies = { "nvim-lua/plenary.nvim", 'nvim-telescope/telescope.nvim', },
-        event = "LspAttach",
+        dependencies = { "nvim-lua/plenary.nvim", 'folke/snacks.nvim', },
+        --event = "LspAttach",
+        ft = { "cs", "fs", "csproj", "fsproj", "sln", "slnx" },
+        build = ":Dotnet _server update",
+        cmd = "Dotnet",
         config = function()
             local dotnet = require("easy-dotnet")
 
@@ -14,6 +15,47 @@ return {
                 -- easy-dotnet will resolve the path automatically if this argument is omitted, for a performance improvement you can add a function that returns a hardcoded string
                 -- You should define this function to return a hardcoded path for a performance improvement 🚀
                 -- get_sdk_path = dotnet_opts.get_sdk_path(),
+                lsp = {
+                    enabled = true,
+                    roslynator_enabled = true,
+                    config = {
+                        settings = {
+                            -- https://github.com/dotnet/vscode-csharp/blob/main/test/lsptoolshost/unitTests/configurationMiddleware.test.ts
+                            -- look for the ones which don't have `vsCodeConfiguration: null`
+                            ["csharp|completion"] = {
+                                dotnet_show_completion_items_from_unimported_namespaces = true,
+                                dotnet_provide_regex_completions = true,
+                                dotnet_show_name_completion_suggestions = true,
+                            },
+                            ["csharp|symbol_search"] = {
+                                dotnet_search_reference_assemblies = true,
+                            },
+                            ["csharp|inlay_hints"] = {
+                                csharp_enable_inlay_hints_for_implicit_object_creation = true,
+                                csharp_enable_inlay_hints_for_implicit_variable_types = true,
+
+                                csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+                                csharp_enable_inlay_hints_for_types = true,
+                                dotnet_enable_inlay_hints_for_indexer_parameters = true,
+                                dotnet_enable_inlay_hints_for_literal_parameters = true,
+                                dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+                                dotnet_enable_inlay_hints_for_other_parameters = true,
+                                dotnet_enable_inlay_hints_for_parameters = true,
+                                dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
+                                dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+                                dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+                            },
+                            ["csharp|code_lens"] = {
+                                dotnet_enable_references_code_lens = true,
+                                dotnet_enable_tests_code_lens = true,
+                            },
+                            ["csharp|background_analysis"] = {
+                                dotnet_analyzer_diagnostics_scope = "fullSolution",
+                                dotnet_compiler_diagnostics_scope = "fullSolution"
+                            }
+                        },
+                    }
+                },
                 ---@type TestRunnerOptions
                 test_runner = {
                     ---@type "split" | "vsplit" | "float" | "buf"
@@ -38,8 +80,10 @@ return {
                     },
                     mappings = {
                         run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
+                        peek_stack_trace_from_buffer = { lhs = "<leader>p", desc = "peek stack trace from buffer" },
                         filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
                         debug_test = { lhs = "<leader>d", desc = "debug test" },
+                        debug_test_from_buffer = { lhs = "<leader>d", desc = "run test from buffer" },
                         go_to_file = { lhs = "g", desc = "go to file" },
                         run_all = { lhs = "<leader>R", desc = "run all tests" },
                         run = { lhs = "<leader>r", desc = "run test" },

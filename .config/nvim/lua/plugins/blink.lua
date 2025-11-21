@@ -117,7 +117,7 @@ return {
                         opts = {
                             score_offset = 15,
                             -- Default is as below ("antonyms", "similar to" and "also see").
-                            pointer_symbols = { "!", "&", "^" },
+                            definition_pointers = { "!", "&", "^" },
                         },
                     },
 
@@ -127,7 +127,7 @@ return {
                         opts = {
                             dictionary_search_threshold = 3,
                             score_offset = 15,
-                            pointer_symbols = { "!", "&", "^" },
+                            definition_pointers = { "!", "&", "^" },
                         },
                     },
                 },

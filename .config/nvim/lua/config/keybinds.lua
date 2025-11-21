@@ -403,7 +403,7 @@ function M.snacks_picker_list()
         ["<c-n>"] = "list_down",
         ["<c-p>"] = "list_up",
         ["<c-q>"] = "qflist",
-        ["<c-s>"] = "edit_split",
+        ["<c-x>"] = "edit_split",
         ["<c-t>"] = "tab",
         ["<c-u>"] = "list_scroll_up",
         ["<c-v>"] = "edit_vsplit",

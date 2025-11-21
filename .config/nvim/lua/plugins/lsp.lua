@@ -138,7 +138,7 @@ return {
             "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
             "aznhe21/actions-preview.nvim",
             "saghen/blink.cmp",
-            "seblyng/roslyn.nvim",
+            --"seblyng/roslyn.nvim",
             "nvimtools/none-ls.nvim",
         },
         event = { "BufReadPre", "BufNewFile" },
@@ -164,19 +164,19 @@ return {
                 -- `opts[server].capabilities, if you"ve defined it
                 config.capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 
-                if server == "roslyn" then
-                    config.capabilities.textDocument.diagnostic.dynamicRegistration = true
-                end
+                -- if server == "roslyn" then
+                --     config.capabilities.textDocument.diagnostic.dynamicRegistration = true
+                -- end
 
                 if not vim.tbl_isempty(config) then
                     vim.lsp.config(server, config)
                 end
 
-                if server == "roslyn" then
-                    require("roslyn").setup({})
-                else
+                -- if server == "roslyn" then
+                --     require("roslyn").setup({})
+                -- else
                     vim.lsp.enable(server)
-                end
+                --end
             end
 
             local sources = {}
