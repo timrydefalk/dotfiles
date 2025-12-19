@@ -48,6 +48,7 @@ return {
             "nvim-treesitter/nvim-treesitter",
             "ravitemer/mcphub.nvim",
         },
+        build = "npm install -g mcp-hub@latest",
         opts = {
             opts = {
                 log_level = "DEBUG", -- or "TRACE"

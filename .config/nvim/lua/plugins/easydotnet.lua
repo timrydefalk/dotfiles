@@ -1,9 +1,13 @@
 return {
+    -- {
+    --     'ionide/Ionide-vim',
+    --     ft = { 'fsharp' },
+    -- },
     {
         "GustavEikaas/easy-dotnet.nvim",
         dependencies = { "nvim-lua/plenary.nvim", 'folke/snacks.nvim', },
         --event = "LspAttach",
-        ft = { "cs", "fs", "csproj", "fsproj", "sln", "slnx" },
+        ft = { "cs" },
         build = ":Dotnet _server update",
         cmd = "Dotnet",
         config = function()
@@ -14,7 +18,11 @@ return {
                 --Optional function to return the path for the dotnet sdk (e.g C:/ProgramFiles/dotnet/sdk/8.0.0)
                 -- easy-dotnet will resolve the path automatically if this argument is omitted, for a performance improvement you can add a function that returns a hardcoded string
                 -- You should define this function to return a hardcoded path for a performance improvement 🚀
-                -- get_sdk_path = dotnet_opts.get_sdk_path(),
+                get_sdk_path = function()
+                    -- Example for windows
+                    -- return "C:/Program Files/dotnet/sdk/8.0.100/"
+                    return "/usr/share/dotnet/sdk/9.0.308"
+                end,
                 lsp = {
                     enabled = true,
                     roslynator_enabled = true,
@@ -164,4 +172,5 @@ return {
                 dotnet.run_project()
             end)
         end
-    } }
+    }
+}
