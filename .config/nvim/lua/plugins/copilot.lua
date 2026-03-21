@@ -20,29 +20,19 @@ return {
                         return true
                     end,
                     cs     = true,
+                    rust   = true,
+                    typescript = true,
                     lua    = true,
                     python = true,
                     yaml   = true,
                     bash   = true,
                     ["*"]  = false
                 },
-                copilot_node_command = "node", -- Node.js version must be > 18.x
+                copilot_node_command = "node",
                 server_opts_overrides = {},
             })
         end,
     },
-    -- {
-    --     "CopilotC-Nvim/CopilotChat.nvim",
-    --     event = "VeryLazy",
-    --     dependencies = {
-    --         { "zbirenbaum/copilot.lua" },
-    --         -- { "nvim-lua/plenary.nvim" },
-    --     },
-    --     build = "make tiktoken", -- Only on MacOS or Linux
-    --     opts = {
-    --         -- See Configuration section for options
-    --     },
-    -- },
     {
         "olimorris/codecompanion.nvim",
         dependencies = {
@@ -50,15 +40,26 @@ return {
             "nvim-treesitter/nvim-treesitter",
             "ravitemer/mcphub.nvim",
         },
-        build = "npm install -g mcp-hub@latest",
         opts = {
             opts = {
                 log_level = "DEBUG", -- or "TRACE"
             },
+            adapters = {
+                http = {
+                    copilot = function()
+                        return require("codecompanion.adapters").extend("copilot", {
+                            schema = {
+                                model = {
+                                    default = "claude-sonnet-4.6",
+                                },
+                            },
+                        })
+                    end,
+                }
+            },
             interactions = {
                 chat = {
                     adapter = "copilot",
-                    model = "sonnet",
                 },
                 inline = {
                     adapter = "copilot",
@@ -67,26 +68,6 @@ return {
                     adapter = "copilot",
                 },
             },
-            -- extensions = {
-            --     mcphub = {
-            --         callback = "mcphub.extensions.codecompanion",
-            --         opts = {
-            --             make_vars = true,
-            --             make_slash_commands = true,
-            --             show_result_in_chat = true
-            --         }
-            --     }
-            -- }
         },
     },
-    {
-        "ravitemer/mcphub.nvim",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-        build = "npm install -g mcp-hub@latest",
-        config = function()
-            require("mcphub").setup()
-        end
-    }
 }
