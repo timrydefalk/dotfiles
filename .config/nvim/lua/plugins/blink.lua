@@ -19,7 +19,8 @@ return {
                 end
             }
         },
-        version = '1.*',
+        build = 'cargo build --release',
+        -- version = '1.*',
 
         ---@module "blink.cmp"
         ---@type blink.cmp.Config

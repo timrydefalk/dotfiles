@@ -1,31 +1,25 @@
 return {
-    -- {
-    --     'ionide/Ionide-vim',
-    --     ft = { 'fsharp' },
-    -- },
+    {
+        'ionide/Ionide-vim',
+        ft = { 'fsharp' },
+    },
     {
         "GustavEikaas/easy-dotnet.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", 'folke/snacks.nvim', },
-        --event = "LspAttach",
-        ft = { "cs" },
+        -- 'nvim-telescope/telescope.nvim' or 'ibhagwan/fzf-lua' or 'folke/snacks.nvim'
+        -- are highly recommended for a better experience
+        dependencies = { "nvim-lua/plenary.nvim", 'mfussenegger/nvim-dap', 'folke/snacks.nvim', },
+        ft = { "cs", "fs", "csproj", "fsproj", "sln", "slnx" },
         build = ":Dotnet _server update",
         cmd = "Dotnet",
         config = function()
             local dotnet = require("easy-dotnet")
-
             -- Options are not required
             dotnet.setup({
-                --Optional function to return the path for the dotnet sdk (e.g C:/ProgramFiles/dotnet/sdk/8.0.0)
-                -- easy-dotnet will resolve the path automatically if this argument is omitted, for a performance improvement you can add a function that returns a hardcoded string
-                -- You should define this function to return a hardcoded path for a performance improvement 🚀
-                get_sdk_path = function()
-                    -- Example for windows
-                    -- return "C:/Program Files/dotnet/sdk/8.0.100/"
-                    return "/usr/share/dotnet/sdk/9.0.308"
-                end,
                 lsp = {
-                    enabled = true,
-                    roslynator_enabled = true,
+                    enabled = true,          -- Enable builtin roslyn lsp
+                    roslynator_enabled = true, -- Automatically enable roslynator analyzer
+                    easy_dotnet_analyzer_enabled = true, -- Enable roslyn analyzer from easy-dotnet-server
+                    analyzer_assemblies = {}, -- Any additional roslyn analyzers you might use like SonarAnalyzer.CSharp
                     config = {
                         settings = {
                             -- https://github.com/dotnet/vscode-csharp/blob/main/test/lsptoolshost/unitTests/configurationMiddleware.test.ts
@@ -64,6 +58,16 @@ return {
                         },
                     }
                 },
+                debugger = {
+                    -- Path to custom coreclr DAP adapter
+                    -- easy-dotnet-server falls back to its own netcoredbg binary if bin_path is nil
+                    bin_path = nil,
+                    apply_value_converters = true,
+                    auto_register_dap = true,
+                    mappings = {
+                        open_variable_viewer = { lhs = "T", desc = "open variable viewer" },
+                    },
+                },
                 ---@type TestRunnerOptions
                 test_runner = {
                     ---@type "split" | "vsplit" | "float" | "buf"
@@ -88,10 +92,10 @@ return {
                     },
                     mappings = {
                         run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
+                        run_all_tests_from_buffer = { lhs = "<leader>t", desc = "run all tests from buffer" },
                         peek_stack_trace_from_buffer = { lhs = "<leader>p", desc = "peek stack trace from buffer" },
                         filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
                         debug_test = { lhs = "<leader>d", desc = "debug test" },
-                        debug_test_from_buffer = { lhs = "<leader>d", desc = "run test from buffer" },
                         go_to_file = { lhs = "g", desc = "go to file" },
                         run_all = { lhs = "<leader>R", desc = "run all tests" },
                         run = { lhs = "<leader>r", desc = "run test" },
@@ -113,25 +117,16 @@ return {
                 },
                 ---@param action "test" | "restore" | "build" | "run"
                 terminal = function(path, action, args)
+                    args = args or ""
                     local commands = {
-                        run = function()
-                            return string.format("dotnet run --project %s %s", path, args)
-                        end,
-                        test = function()
-                            return string.format("dotnet test %s %s", path, args)
-                        end,
-                        restore = function()
-                            return string.format("dotnet restore %s %s", path, args)
-                        end,
-                        build = function()
-                            return string.format("dotnet build %s %s", path, args)
-                        end,
-                        watch = function()
-                            return string.format("dotnet watch --project %s %s", path, args)
-                        end
+                        run = function() return string.format("dotnet run --project %s %s", path, args) end,
+                        test = function() return string.format("dotnet test %s %s", path, args) end,
+                        restore = function() return string.format("dotnet restore %s %s", path, args) end,
+                        build = function() return string.format("dotnet build %s %s", path, args) end,
+                        watch = function() return string.format("dotnet watch --project %s %s", path, args) end,
                     }
-
-                    local command = commands[action]() .. "\r"
+                    local command = commands[action]()
+                    if require("easy-dotnet.extensions").isWindows() == true then command = command .. "\r" end
                     vim.cmd("vsplit")
                     vim.cmd("term " .. command)
                 end,
@@ -139,8 +134,16 @@ return {
                 fsproj_mappings = true,
                 auto_bootstrap_namespace = {
                     --block_scoped, file_scoped
-                    type = "file_scoped",
-                    enabled = true
+                    type = "block_scoped",
+                    enabled = true,
+                    use_clipboard_json = {
+                        behavior = "prompt", --'auto' | 'prompt' | 'never',
+                        register = "+", -- which register to check
+                    },
+                },
+                server = {
+                    ---@type nil | "Off" | "Critical" | "Error" | "Warning" | "Information" | "Verbose" | "All"
+                    log_level = nil,
                 },
                 -- choose which picker to use with the plugin
                 -- possible values are "telescope" | "fzf" | "snacks" | "basic"
@@ -156,9 +159,13 @@ return {
                         spinner:start_spinner(start_event.job.name)
                         ---@param finished_event JobEvent
                         return function(finished_event)
-                            spinner:stop_spinner(finished_event.result.text, finished_event.result.level)
+                            spinner:stop_spinner(finished_event.result.msg, finished_event.result.level)
                         end
                     end,
+                },
+                diagnostics = {
+                    default_severity = "error",
+                    setqflist = false,
                 },
             })
 

@@ -29,6 +29,7 @@ return {
         lua_ls = {}, -- configuration provided via lazydev.nvim
         bashls = {},
         pyright = {},
+        terraform = {},
         --vacuum = {},
         -- roslyn = {
         --     on_attach = function(_, _) -- client, bufnr

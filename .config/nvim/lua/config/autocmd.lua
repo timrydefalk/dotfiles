@@ -97,6 +97,8 @@ autocmd(
                 print("Changing cwd: ", new_cwd_path)
                 vim.api.nvim_set_current_dir(new_cwd_path)
             end
+
+             --vim.treesitter.start()
         end
     }
 )

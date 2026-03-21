@@ -2,8 +2,9 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         dependencies = {
-            "nvim-treesitter/nvim-treesitter-textobjects",
+            {"nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
         },
+        branch = "master",
         build = ":TSUpdate",
         event = { "BufReadPost", "BufNewFile" },
         config = function()
@@ -69,6 +70,7 @@ return {
         "nvim-treesitter/nvim-treesitter-context",
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         event = { "BufReadPost", "BufNewFile" },
+        branch = "master",
         opts = {
             max_lines = 3
         }

@@ -22,6 +22,8 @@ return {
                     cs     = true,
                     lua    = true,
                     python = true,
+                    yaml   = true,
+                    bash   = true,
                     ["*"]  = false
                 },
                 copilot_node_command = "node", -- Node.js version must be > 18.x
@@ -53,9 +55,10 @@ return {
             opts = {
                 log_level = "DEBUG", -- or "TRACE"
             },
-            strategies = {
+            interactions = {
                 chat = {
                     adapter = "copilot",
+                    model = "sonnet",
                 },
                 inline = {
                     adapter = "copilot",
@@ -64,16 +67,16 @@ return {
                     adapter = "copilot",
                 },
             },
-            extensions = {
-                mcphub = {
-                    callback = "mcphub.extensions.codecompanion",
-                    opts = {
-                        make_vars = true,
-                        make_slash_commands = true,
-                        show_result_in_chat = true
-                    }
-                }
-            }
+            -- extensions = {
+            --     mcphub = {
+            --         callback = "mcphub.extensions.codecompanion",
+            --         opts = {
+            --             make_vars = true,
+            --             make_slash_commands = true,
+            --             show_result_in_chat = true
+            --         }
+            --     }
+            -- }
         },
     },
     {
