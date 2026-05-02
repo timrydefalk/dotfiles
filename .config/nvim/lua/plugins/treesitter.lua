@@ -1,78 +1,60 @@
 return {
     {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            {"nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
-        },
-        branch = "master",
-        build = ":TSUpdate",
-        event = { "BufReadPost", "BufNewFile" },
+        "romus204/tree-sitter-manager.nvim",
+        dependencies = {}, -- tree-sitter CLI must be installed system-wide
         config = function()
-            ---@diagnostic disable-next-line: missing-fields
-            require("nvim-treesitter.configs").setup({
-                highlight = {
-                    enable = true
-                },
-                indent = {
-                    enable = true
-                },
-                ensure_installed = {
-                    "lua",
-                    "markdown",
-                    "markdown_inline",
-                    "diff",
-                    "bash",
-                    "regex",
-                },
-                auto_install = true,
-                textobjects = {
-                    select = {
-                        enable = true,
-                        lookahead = true,
-                        keymaps = {
-                            ["coc"] = { query = "@class.outer", desc = "Select outer part of a class" },
-                            ["cic"] = { query = "@class.inner", desc = "Select inner part of a class" },
-                            ["cof"] = { query = "@function.outer", desc = "Select outer part of a function" },
-                            ["cif"] = { query = "@function.inner", desc = "Select inner part of a function" },
-                            ["cob"] = { query = "@block.outer", desc = "Select outer part of a block" },
-                            ["cib"] = { query = "@block.inner", desc = "Select inner part of a block" },
-                            ["cop"] = { query = "@parameter.outer", desc = "Select outer part of a parameter" },
-                            ["cip"] = { query = "@parameter.inner", desc = "Select inner part of a parameter" },
-                        },
-                        -- You can choose the select mode (default is charwise "v")
-                        --
-                        -- Can also be a function which gets passed a table with the keys
-                        -- * query_string: eg "@function.inner"
-                        -- * method: eg "v" or "o"
-                        -- and should return the mode ("v", "V", or "<c-v>") or a table
-                        -- mapping query_strings to modes.
-                        selection_modes = {
-                            -- ["@parameter.outer"] = "v", -- charwise
-                            -- ["@function.outer"] = "V",  -- linewise
-                            -- ["@class.outer"] = "<c-v>", -- blockwise
-                        },
-                        -- If you set this to `true` (default is `false`) then any textobject is
-                        -- extended to include preceding or succeeding whitespace. Succeeding
-                        -- whitespace has priority in order to act similarly to eg the built-in
-                        -- `ap`.
-                        --
-                        -- Can also be a function which gets passed a table with the keys
-                        -- * query_string: eg "@function.inner"
-                        -- * selection_mode: eg "v"
-                        -- and should return true or false
-                        include_surrounding_whitespace = false,
-                    },
-                },
+            require("tree-sitter-manager").setup({
+                -- Default Options
+                ensure_installed = { "lua", "markdown", "markdown_inline", "yaml" }, -- list of parsers to install at the start of a neovim session
+                border = "rounded",                                                  -- border style for the window (e.g. "rounded", "single"), if nil, use the default border style defined by 'vim.o.winborder'. See :h 'winborder' for more info.
+                auto_install = true,                                                 -- if enabled, install missing parsers when editing a new file
+                highlight = true,                                                    -- treesitter highlighting is enabled by default
+                -- languages = {}, -- override or add new parser sources
+                -- parser_dir = vim.fn.stdpath("data") .. "/site/parser",
+                -- query_dir = vim.fn.stdpath("data") .. "/site/queries",
             })
         end
     },
     {
-        "nvim-treesitter/nvim-treesitter-context",
-        dependencies = { "nvim-treesitter/nvim-treesitter" },
-        event = { "BufReadPost", "BufNewFile" },
-        branch = "master",
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
+        init = function()
+            -- Disable entire built-in ftplugin mappings to avoid conflicts.
+            -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+            vim.g.no_plugin_maps = true
+
+            -- Or, disable per filetype (add as you like)
+            -- vim.g.no_python_maps = true
+            -- vim.g.no_ruby_maps = true
+            -- vim.g.no_rust_maps = true
+            -- vim.g.no_go_maps = true
+        end,
         opts = {
-            max_lines = 3
+            select = {
+                lookahead = true,
+                -- You can choose the select mode (default is charwise "v")
+                --
+                -- Can also be a function which gets passed a table with the keys
+                -- * query_string: eg "@function.inner"
+                -- * method: eg "v" or "o"
+                -- and should return the mode ("v", "V", or "<c-v>") or a table
+                -- mapping query_strings to modes.
+                selection_modes = {
+                    -- ["@parameter.outer"] = "v", -- charwise
+                    -- ["@function.outer"] = "V",  -- linewise
+                    -- ["@class.outer"] = "<c-v>", -- blockwise
+                },
+                -- If you set this to `true` (default is `false`) then any textobject is
+                -- extended to include preceding or succeeding whitespace. Succeeding
+                -- whitespace has priority in order to act similarly to eg the built-in
+                -- `ap`.
+                --
+                -- Can also be a function which gets passed a table with the keys
+                -- * query_string: eg "@function.inner"
+                -- * selection_mode: eg "v"
+                -- and should return true or false
+                include_surrounding_whitespace = false,
+            },
         }
-    },
+    }
 }

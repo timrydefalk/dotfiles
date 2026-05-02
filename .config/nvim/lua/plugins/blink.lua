@@ -7,6 +7,7 @@ return {
             "MahanRahmati/blink-nerdfont.nvim",
             "archie-judd/blink-cmp-words",
             "moyiz/blink-emoji.nvim",
+            "saghen/blink.lib",
             {
                 'L3MON4D3/LuaSnip',
                 version = 'v2.*',
@@ -19,8 +20,25 @@ return {
                 end
             }
         },
-        build = 'cargo build --release',
+        build = function() require('blink.cmp').build():wait(60000) end,
+        -- build = 'cargo build --release',
         -- version = '1.*',
+
+        config = function(_, opts)
+            -- HACK: Some blink community sources depend on the old v1 lib that blink shipped
+            -- with. Shim in the new `blink.lib` and functions that those community sources need
+            -- from the v1 stuff until they're updated.
+            package.loaded["blink.cmp.lib.async"] = (function()
+                local task = require("blink.lib.task")
+                task.empty = task.resolve
+                task.on_completion = task.on_resolve
+                task.on_failure = task.on_reject
+                task.task = task
+                return task
+            end)()
+
+            require("blink.cmp").setup(opts)
+        end,
 
         ---@module "blink.cmp"
         ---@type blink.cmp.Config
@@ -66,12 +84,12 @@ return {
             },
 
             sources = {
-                default = { "copilot", "lsp", "path", "snippets", "buffer", "cmdline" },
+                default = { "copilot", "lsp", "path", "snippets", "buffer", "cmdline", "nerdfont", "emoji" },
                 per_filetype = {
-                    lua = { inherit_defaults = true, 'lazydev', "nerdfont", "emoji" },
-                    text = { "dictionary", "thesaurus", "emoji" },
-                    markdown = { "dictionary", "thesaurus", "emoji" },
-                    gitcommit = { "dictionary", "thesaurus", "emoji" },
+                    lua = { inherit_defaults = true, 'lazydev' },
+                    text = { "dictionary", "thesaurus" },
+                    markdown = { "dictionary", "thesaurus" },
+                    gitcommit = { "dictionary", "thesaurus" },
                     xml = { inherit_defaults = true, "easy-dotnet" },
                 },
                 providers = {

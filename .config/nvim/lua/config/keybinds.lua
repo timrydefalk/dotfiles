@@ -222,6 +222,56 @@ function M.common()
     -- Git
     map("n", "<leader>gb", function() Snacks.git.blame_line() end,
         { desc = "Git - Blame Line", noremap = true, silent = true })
+
+    -- treesitter textobjects
+    map({ "x", "o" }, "coc",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@class.outer", "textobjects")
+        end,
+        { desc = "Select outer part of a class", noremap = true, silent = true })
+    map({ "x", "o" }, "cic",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@class.inner", "textobjects")
+        end,
+        { desc = "Select inner part of a class", noremap = true, silent = true })
+    map({ "x", "o" }, "cof",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@function.outer", "textobjects")
+        end,
+        { desc = "Select outer part of a function", noremap = true, silent = true })
+    map({ "x", "o" }, "cif",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@function.inner", "textobjects")
+        end,
+        { desc = "Select inner part of a function", noremap = true, silent = true })
+    map({ "x", "o" }, "cob",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@block.outer", "textobjects")
+        end,
+        { desc = "Select outer part of a block", noremap = true, silent = true })
+    map({ "x", "o" }, "cib",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@block.inner", "textobjects")
+        end,
+        { desc = "Select inner part of a block", noremap = true, silent = true })
+    map({ "x", "o" }, "cop",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@parameter.outer", "textobjects")
+        end,
+        { desc = "Select outer part of a parameter", noremap = true, silent = true })
+    map({ "x", "o" }, "cip",
+        function()
+            require("nvim-treesitter-textobjects.select")
+                .select_textobject("@parameter.inner", "textobjects")
+        end,
+        { desc = "Select inner part of a parameter", noremap = true, silent = true })
 end
 
 function M.lsp()
