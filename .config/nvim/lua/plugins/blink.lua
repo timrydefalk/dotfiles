@@ -7,8 +7,8 @@ return {
             --"MahanRahmati/blink-nerdfont.nvim",
             "archie-judd/blink-cmp-words",
             --"moyiz/blink-emoji.nvim",
-            { "timrydefalk/blink-cmp-emoji" },
-            { "timrydefalk/blink-cmp-nerdfont" },
+            "timrydefalk/blink-cmp-emoji",
+            "timrydefalk/blink-cmp-nerdfont",
             "saghen/blink.lib",
             {
                 'L3MON4D3/LuaSnip',
