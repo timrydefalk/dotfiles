@@ -12,6 +12,7 @@ return {
                     "yaml",
                     "bash",
                     "regex",
+                    "diff",
                 },
                 border = "rounded",
                 auto_install = true,

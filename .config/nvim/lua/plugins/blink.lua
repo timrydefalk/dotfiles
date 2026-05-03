@@ -4,9 +4,11 @@ return {
         -- optional: provides snippets for the snippet source
         dependencies = {
             "fang2hou/blink-copilot",
-            "MahanRahmati/blink-nerdfont.nvim",
+            --"MahanRahmati/blink-nerdfont.nvim",
             "archie-judd/blink-cmp-words",
-            "moyiz/blink-emoji.nvim",
+            --"moyiz/blink-emoji.nvim",
+            { "timrydefalk/blink-cmp-emoji" },
+            { "timrydefalk/blink-cmp-nerdfont" },
             "saghen/blink.lib",
             {
                 'L3MON4D3/LuaSnip',
@@ -67,6 +69,10 @@ return {
             },
 
             completion = {
+                trigger = {
+                    show_on_trigger_character = true,
+                    show_on_keyword = true,
+                },
                 menu = {
                     auto_show = true,
                     border = "rounded",
@@ -85,12 +91,12 @@ return {
             },
 
             sources = {
-                default = { "copilot", "lsp", "path", "snippets", "buffer", "cmdline", "nerdfont", "emoji" },
+                default = { "copilot", "lsp", "path", "snippets", "buffer", "cmdline" },
                 per_filetype = {
-                    lua = { inherit_defaults = true, 'lazydev' },
-                    text = { "dictionary", "thesaurus" },
-                    markdown = { "dictionary", "thesaurus" },
-                    gitcommit = { "dictionary", "thesaurus" },
+                    lua = { inherit_defaults = true, 'lazydev', "nerdfont", "emoji"  },
+                    text = { "dictionary", "thesaurus", "nerdfont", "emoji"  },
+                    markdown = { "dictionary", "thesaurus", "nerdfont", "emoji"  },
+                    gitcommit = { "dictionary", "thesaurus", "nerdfont", "emoji"  },
                     xml = { inherit_defaults = true, "easy-dotnet" },
                 },
                 providers = {
@@ -116,19 +122,19 @@ return {
                     },
 
                     nerdfont = {
-                        module = "blink-nerdfont",
-                        name = "Nerd Fonts",
+                        module = "blink-cmp-nerdfont",
+                        name = "blink-cmp-nerdfont",
+                        max_items = 10,
+                        min_keyword_length = 1,
                         score_offset = 10,
-                        opts = { insert = true },
                     },
 
                     emoji = {
-                        module = "blink-emoji",
-                        name = "Emoji",
+                        module = "blink-cmp-emoji",
+                        name = "blink-cmp-emoji",
+                        max_items = 10,
+                        min_keyword_length = 1,
                         score_offset = 10,
-                        opts = {
-                            insert = true,
-                        },
                     },
 
                     thesaurus = {
